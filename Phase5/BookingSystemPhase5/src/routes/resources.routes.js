@@ -72,7 +72,7 @@ router.post("/", resourceValidators, async (req, res) => {
     const resourceId = rows[0].id;
     await logEvent({
       actorUserId,
-      message: `XXXX ${resourceId} XXXX`,
+      message: `Created resource ${resourceId}, name: ${resourceName}, description: ${resourceDescription}, available: ${resourceAvailable}, price: ${resourcePrice} ${resourcePriceUnit}`,
       entityType: "resource",
       entityId: resourceId,
     });
@@ -85,7 +85,7 @@ router.post("/", resourceValidators, async (req, res) => {
       console.error(err);
       await logEvent({
         actorUserId,
-        message: `YYYY ${resourceName} YYYY`,
+        message: `Failed to create resource ${resourceName} (duplicate)`,
         entityType: "resource",
         entityId: null,
       });

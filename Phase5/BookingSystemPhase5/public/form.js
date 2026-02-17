@@ -90,10 +90,17 @@ function buildValidationMessage(errors) {
   const lines = errors.map((e) => {
     const field = e.field || "field";
     const msg = e.msg || "Invalid value";
-    return `• ${field}: ${msg}`;
+    const label = field === "resourceName" ? "Resource name" 
+      : field === "resourcePrice" ? "Price"
+      : field === "resourcePriceUnit" ? "Price unit"
+      : field === "resourceDescription" ? "Description"
+      : field === "resourceAvailable" ? "Availability"
+      : field;
+    return `• ${label}: ${msg}`;
+
   });
 
-  return `Your request was blocked by server-side validation:\n\n${lines.join("\n")}`;
+  return `Some fields need to be corrected:\n\n${lines.join("\n")}\n\nPlease fix and try again.`;
 }
 
 /**
@@ -158,9 +165,9 @@ async function onSubmit(event) {
       // 409 = duplicate resourceName (our new feature)
       if (response.status === 409) {
         const msg =
-          body?.details ||
-          "A resource with the same name already exists. Please choose another name.";
-        showFormMessage("info", `Duplicate blocked (409):\n\n${msg}`);
+        //  body?.details ||
+          `A resource with the "${resourceName.value}" name already exists. Please choose another name.`;
+        showFormMessage("info", msg);
         return;
       }
 
@@ -179,9 +186,17 @@ async function onSubmit(event) {
       : "";
 
     const msgLines = [];
+    msgLines.push(`Resource ${actionValue}d successfully!`);
     msgLines.push(`Name ➡️ ${body?.data?.name ?? ""}`);
-    if (createdAt) msgLines.push(`Created at ➡️ ${createdAt}`);
-    msgLines.push(`ID in database ➡️ ${body?.data?.id ?? ""}`);
+    msgLines.push(`Description ➡️ ${body?.data?.description ?? ""}`);
+    msgLines.push(`Availability ➡️ ${body?.data?.available ? "Yes" : "No"}`);
+    msgLines.push(
+      `Price ➡️ ${
+        body?.data?.price !== undefined ? body.data.price : ""
+      } ${body?.data?.price_unit ?? ""}`
+    );
+    if (createdAt) msgLines.push(`Created at ➡️ ${new Date(createdAt).toLocaleString()}`);
+    msgLines.push("Congratulations on your new resource! 🎉");
 
     const msg = msgLines.join("\n");
     showFormMessage("success", msg);
