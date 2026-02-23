@@ -1,0 +1,59 @@
+### Test 1. Valid request
+POST http://localhost:5001/api/resources
+Content-Type: application/json
+
+{
+  "action": "create",
+  "resourceName": "",
+  "resourceDescription": "",
+  "resourceAvailable": false,
+  "resourcePrice": -60,
+  "resourcePriceUnit": "day"
+}
+
+### Test 2. Empty action field
+POST http://localhost:5001/api/resources
+Content-Type: application/json
+
+{
+  "action": "",
+  "resourceName": "Test",
+  "resourceDescription": "Test description here",
+  "resourceAvailable": true,
+  "resourcePrice": 10,
+  "resourcePriceUnit": "day"
+}
+
+### Tesr 3. Missing action field
+POST http://localhost:5001/api/resources
+Content-Type: application/json
+
+{
+  "action": "create"
+}
+
+### Test 4. Invalid resourcePriceUnit (week - not in the list)
+POST http://localhost:5001/api/resources
+Content-Type: application/json
+
+{
+  "action": "create",
+  "resourceName": "Projector",
+  "resourceDescription": "Projector for presentations",
+  "resourceAvailable": true,
+  "resourcePrice": 100,
+  "resourcePriceUnit": "week"
+}
+
+### Test 5: Negative price
+POST http://localhost:5001/api/resources
+Content-Type: application/json
+
+{
+  "action": "create",
+  "resourceName": "Room 10",
+  "resourceDescription": "Office space",
+  "resourceAvailable": true,
+  "resourcePrice": -5,
+  "resourcePriceUnit": "hour"
+}
